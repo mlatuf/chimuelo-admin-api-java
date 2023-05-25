@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:./db/chimuelo
+    name: chimuelo
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
