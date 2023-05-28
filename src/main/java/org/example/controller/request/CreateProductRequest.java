@@ -1,12 +1,14 @@
 package org.example.controller.request;
 
 import lombok.Data;
+import org.example.validators.ClientContactValidation;
 
 import javax.validation.constraints.NotEmpty;
 
 @Data
-public class CreateCategoryRequest {
+@ClientContactValidation
+public class CreateProductRequest {
     @NotEmpty
     private String name;
-    private Long parent;
+    private Long category;
 }

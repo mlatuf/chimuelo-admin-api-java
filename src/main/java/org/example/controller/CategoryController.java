@@ -51,4 +51,5 @@ public class CategoryController {
                                      @RequestBody @Valid UpdateParentRequest request) {
         return mapper.toDto(service.patchParent(id, request.getParent()));
     }
+
 }

@@ -7,6 +7,7 @@ import org.example.mapper.ClientMapper;
 import org.example.model.Client;
 import org.example.repository.ClientRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -30,7 +31,10 @@ public class ClientService {
     }
 
     public List<Client> findClientByString(String value) {
-        return mapper.toModel(repository.findByString(value));
+        if(StringUtils.hasText(value)){
+            return mapper.toModel(repository.findByString(value));
+        }
+        return mapper.toModel(repository.findAll());
     }
 
 

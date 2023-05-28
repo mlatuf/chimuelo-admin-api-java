@@ -30,8 +30,9 @@ public class ClientController {
         return mapper.toDto(service.createClient(request));
     }
 
+    //paginado
     @GetMapping
-    public List<ClientDto> createClient(@RequestParam @Size(min = 3) String keyword) {
+    public List<ClientDto> search(@RequestParam(required = false) @Size(min = 3) String keyword) {
         return mapper.toDto(service.findClientByString(keyword));
     }
 }
