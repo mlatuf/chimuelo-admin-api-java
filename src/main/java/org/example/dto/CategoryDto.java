@@ -1,9 +1,10 @@
 package org.example.dto;
 
 import lombok.Data;
+import org.example.capabilities.HasId;
 
 @Data
-public class CategoryDto {
+public class CategoryDto  implements HasId {
 
     private Long id;
     private String name;

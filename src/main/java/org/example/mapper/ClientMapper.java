@@ -4,10 +4,11 @@ import org.example.dto.ClientDto;
 import org.example.entity.ClientEntity;
 import org.example.model.Client;
 import org.mapstruct.Mapper;
+import org.mapstruct.NullValueCheckStrategy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface ClientMapper {
 
 

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.capabilities.HasId;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,15 +19,15 @@ import javax.persistence.Table;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClientEntity {
+public class ClientEntity  implements HasId {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "category_sequence"
+            generator = "client_sequence"
     )
     @SequenceGenerator(
-            name = "category_sequence",
-            sequenceName = "category_sequence",
+            name = "client_sequence",
+            sequenceName = "client_sequence",
             allocationSize = 1
     )
     private Long id;

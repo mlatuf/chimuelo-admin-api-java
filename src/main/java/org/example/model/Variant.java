@@ -1,8 +1,18 @@
 package org.example.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.example.capabilities.HasId;
+
 import java.util.Map;
 
-public class Variante {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Variant implements HasId {
     private Long id;
     private String sku;
     private String name;

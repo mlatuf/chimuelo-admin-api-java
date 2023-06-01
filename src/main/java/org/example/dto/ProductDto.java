@@ -1,12 +1,21 @@
 package org.example.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.example.capabilities.HasId;
 import org.example.model.Category;
-import org.example.model.Money;
 
 import java.util.List;
 
-public class ProductDto {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductDto  implements HasId {
+    private Long id;
     private String name;
     private List<VariantDto> variants;
-    private Category category;
+    private CategoryDto category;
 }

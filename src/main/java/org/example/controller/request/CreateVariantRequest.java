@@ -10,8 +10,8 @@ import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @Data
-@ClientContactValidation
 public class CreateVariantRequest {
+
     @NotEmpty
     private String sku;
     @NotEmpty
@@ -22,6 +22,6 @@ public class CreateVariantRequest {
     private Long stock;
     @Valid
     @NotNull
-    private Money price; //FIXME para mi el precio va acá, no en producto, porque puede que una variante salga mas que otra (distinta estampa)
+    private Money price;
     private Map<String, String> properties;
 }

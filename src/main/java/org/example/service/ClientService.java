@@ -20,14 +20,15 @@ public class ClientService {
 
 
     public Client createClient(CreateClientRequest req) {
-        ClientEntity build = ClientEntity.builder()
+        Client build = Client.builder()
                 .name(req.getName())
                 .address(req.getAddress())
                 .instagram(req.getInstagram())
                 .lastname(req.getLastname())
                 .phone(req.getPhone())
                 .score(0).build();
-        return mapper.toModel(repository.save(build));
+        ClientEntity clientEntity = mapper.toEntity(build);
+        return mapper.toModel(repository.save(clientEntity));
     }
 
     public List<Client> findClientByString(String value) {

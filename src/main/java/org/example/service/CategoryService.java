@@ -23,15 +23,21 @@ public class CategoryService {
 
 
     public Category createCategory(CreateCategoryRequest categoryRequest) {
-        CategoryEntity.CategoryEntityBuilder builder = CategoryEntity.builder().name(categoryRequest.getName());
+        Category.CategoryBuilder builder = Category.builder().name(categoryRequest.getName());
         if (categoryRequest.getParent() != null) {
-            builder.parent(this.getCategoryEntity(categoryRequest.getParent()));
+            builder.parent(this.getCategoryById(categoryRequest.getParent()));
         }
-        return mapper.toModel(repository.save(builder.build()));
+        CategoryEntity categoryEntity = mapper.toEntity(builder.build());
+
+        return mapper.toModel(repository.save(categoryEntity));
     }
 
     public List<Category> listCategories() {
         return repository.findAll().stream().map(mapper::toModel).collect(Collectors.toList());
+    }
+
+    public Category getCategoryById(Long id) {
+        return mapper.toModel(this.getCategoryEntity(id));
     }
 
     public void removeCategory(Long id) {

@@ -4,9 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.capabilities.HasId;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Data
-public class Category {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Category implements HasId {
 
     private Long id;
     private String name;

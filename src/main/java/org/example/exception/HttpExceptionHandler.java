@@ -2,12 +2,16 @@ package org.example.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.response.ErrorResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 
 @ControllerAdvice
@@ -39,6 +43,24 @@ public class HttpExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> methodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        ErrorResponse.ErrorResponseBuilder errorBuilder = ErrorResponse.builder()
+                .code(ErrorCode.INVALID_REQUEST);
+        exception.getBindingResult().getAllErrors().forEach(error ->
+                {
+                    if (error instanceof FieldError) {
+                        FieldError fieldError = (FieldError) error;
+                        errorBuilder.detail(fieldError.getField(), error.getDefaultMessage());
+                    } else
+                        errorBuilder.detail(DETAIL_KEY_REQUEST, error.getDefaultMessage());
+                }
+        );
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorBuilder.build());
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ErrorResponse> bindException(BindException exception) {
         ErrorResponse.ErrorResponseBuilder errorBuilder = ErrorResponse.builder()
                 .code(ErrorCode.INVALID_REQUEST);
         exception.getBindingResult().getAllErrors().forEach(error ->
