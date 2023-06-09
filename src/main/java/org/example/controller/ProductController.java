@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.example.controller.request.CreateUpdateProductRequest;
 import org.example.controller.request.CreateVariantRequest;
@@ -28,33 +29,39 @@ public class ProductController {
     private final ProductMapper productMapper;
 
     @PostMapping
+    @Operation(summary = "Crea productos")
     public ProductDto createProduct(@RequestBody @Validated CreateUpdateProductRequest request) {
         return productMapper.toDto(productService.createProduct(request));
     }
 
     @GetMapping("/{id}")
-    public ProductDto createProduct(@PathVariable Long id) {
+    @Operation(summary = "Get product")
+    public ProductDto getProduct(@PathVariable Long id) {
         return productMapper.toDto(productService.getProductById(id));
     }
 
     @GetMapping
+    @Operation(summary = "Listar productos")
     public ListProductResponse listProductsBy(@Validated ListProductRequest request) {
         PageResponse<Product> page = productService.findBy(request.getCategory(), request.getPageSize(), request.getPageNumber());
         return new ListProductResponse(page.getPageSize(), page.getPageNumber(),
                 page.getTotalElements(), page.getTotalPages(), productMapper.toDto(page.getElements()));
     }
 
+    @Operation(summary = "Actualizar producto")
     @PatchMapping("/{productId}")
     public ProductDto updateProduct(@PathVariable Long productId, @RequestBody @Validated CreateUpdateProductRequest request) {
         return productMapper.toDto(productService.patchProduct(productId, request));
     }
 
+    @Operation(summary = "Agregar una variante a un producto")
     @PostMapping("/{productId}/variants")
     public ProductDto addVariant(@RequestBody @Validated CreateVariantRequest request, @PathVariable Long productId) {
         return productMapper.toDto(productService.addVariant(productId, request));
     }
 
-    @PostMapping("/{productId}/variants/{variantId}")
+    @PatchMapping("/{productId}/variants/{variantId}")
+    @Operation(summary = "Actualiza una variante")
     public ProductDto updateVariant(@RequestBody @Validated CreateVariantRequest request,
                                     @PathVariable Long productId,
                                     @PathVariable Long variantId) {
@@ -62,6 +69,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{productId}/price")
+    @Operation(summary = "Actualiza el precio de todas las variantes del producto")
     public ProductDto updateVariants(@RequestBody @Validated UpdatePriceRequest request,
                                      @PathVariable Long productId) {
         return productMapper.toDto(productService.updateProductPrice(productId, request));

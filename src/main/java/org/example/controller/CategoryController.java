@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.example.controller.request.CreateCategoryRequest;
 import org.example.controller.request.UpdateParentRequest;
@@ -37,16 +38,19 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Crea categorias")
     public CategoryDto createCategory(@RequestBody @Valid CreateCategoryRequest request) {
         return mapper.toDto(service.createCategory(request));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Borra categorias")
     public void deleteCategory(@PathVariable Long id) {
         service.removeCategory(id);
     }
 
     @PatchMapping("/{id}")
+    @Operation(summary = "Actualiza categorias")
     public CategoryDto patchCategory(@PathVariable Long id,
                                      @RequestBody @Valid UpdateParentRequest request) {
         return mapper.toDto(service.patchParent(id, request.getParent()));
