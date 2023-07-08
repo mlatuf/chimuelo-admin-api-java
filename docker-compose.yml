@@ -1,8 +1,0 @@
-version: '3'
-services:
-  java-service:
-    build: .
-    links:
-      - redis-server
-    ports:
-      - "8080:8080"
