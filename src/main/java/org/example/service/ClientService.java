@@ -2,7 +2,9 @@ package org.example.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.controller.request.CreateClientRequest;
+import org.example.dto.ClientDto;
 import org.example.entity.ClientEntity;
+import org.example.exception.ResourceNotFoundException;
 import org.example.mapper.ClientMapper;
 import org.example.model.Client;
 import org.example.repository.ClientRepository;
@@ -32,11 +34,26 @@ public class ClientService {
     }
 
     public List<Client> findClientByString(String value) {
-        if(StringUtils.hasText(value)){
+        if (StringUtils.hasText(value)) {
             return mapper.toModel(repository.findByString(value));
         }
         return mapper.toModel(repository.findAll());
     }
 
 
+    public Client updateClient(Long id, ClientDto clientDto) {
+        Client merge = mapper.merge(getById(id), mapper.toModel(clientDto));
+        repository.save(mapper.toEntity(merge));
+        return merge;
+    }
+
+    public Client deleteClientById(Long id) {
+        Client byId = this.getById(id);
+        repository.deleteById(id);
+        return byId;
+    }
+
+    public Client getById(Long id) {
+        return mapper.toModel(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id)));
+    }
 }
