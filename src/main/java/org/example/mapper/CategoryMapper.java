@@ -34,19 +34,6 @@ public interface CategoryMapper {
 
     @Named("getFullName")
     default String getFullName(Category category) {
-        Category currentCat = category;
-        List<String> parents = new ArrayList<>();
-        while (currentCat.getParent() != null) {
-            parents.add(currentCat.getParent().getName());
-            currentCat = currentCat.getParent();
-        }
-        if (parents.isEmpty()) {
-            return category.getName();
-        }
-        return parents.stream()
-                .sorted(Collections.reverseOrder())
-                .collect(Collectors.joining(CATEGORY_FULLNAME_DELIMITER))
-                .concat(CATEGORY_FULLNAME_DELIMITER)
-                .concat(category.getName());
+        return category.getFullName();
     }
 }

@@ -3,33 +3,51 @@ package org.example.service;
 import lombok.RequiredArgsConstructor;
 import org.example.controller.request.CreateUpdateProductRequest;
 import org.example.controller.request.CreateVariantRequest;
+import org.example.controller.request.ExportRequest;
 import org.example.controller.request.UpdatePriceRequest;
 import org.example.entity.ProductEntity;
 import org.example.exception.ResourceNotFoundException;
 import org.example.mapper.ProductMapper;
 import org.example.mapper.VariantMapper;
-import org.example.model.Money;
-import org.example.model.PageResponse;
-import org.example.model.Product;
-import org.example.model.Variant;
+import org.example.model.*;
 import org.example.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.Optional.ofNullable;
+
 @Service
-@RequiredArgsConstructor
 public class ProductService {
 
     private final ProductMapper mapper;
     private final VariantMapper variantMapper;
     private final ProductRepository repository;
     private final CategoryService categoryService;
+
+    private final Map<ExportStrategyName, ExportStrategy> exportStrategies;
+
+    public ProductService(ProductMapper mapper,
+                          VariantMapper variantMapper,
+                          ProductRepository repository,
+                          CategoryService categoryService,
+                          List<ExportStrategy> exportStrategies) {
+        this.mapper = mapper;
+        this.variantMapper = variantMapper;
+        this.repository = repository;
+        this.categoryService = categoryService;
+        this.exportStrategies = exportStrategies.stream().collect(Collectors.toMap(ExportStrategy::getStrategyName, Function.identity()));
+    }
 
     public Product createProduct(CreateUpdateProductRequest request) {
         return this.save(buildProduct(request));
@@ -38,7 +56,6 @@ public class ProductService {
     public Product addVariant(Long productId, CreateVariantRequest request) {
         Variant variant = Variant.builder()
                 .sku(request.getSku())
-                .name(request.getName())
                 .size(request.getSize())
                 .stock(request.getStock())
                 .price(request.getPrice())
@@ -110,10 +127,10 @@ public class ProductService {
     }
 
 
+    //TODO move this to mapstruct mapper
     private Variant buildVariant(CreateVariantRequest request) {
         return Variant.builder()
                 .sku(request.getSku() == null ? request.getSku() : null)
-                .name(request.getName() == null ? request.getName() : null)
                 .size(request.getSize() == null ? request.getSize() : null)
                 .stock(request.getStock() == null ? request.getStock() : null)
                 .price(request.getPrice() == null ? request.getPrice() : null)
@@ -121,4 +138,14 @@ public class ProductService {
                 .build();
     }
 
+    public List<Product> getAll() {
+        return mapper.toModel(repository.findAll());
+    }
+
+    public File export(ExportRequest request) throws IOException {
+        ExportStrategyName strategy = request.getStrategy();
+        return ofNullable(exportStrategies.get(strategy))
+                .orElseThrow(() -> new IllegalArgumentException("missing strategy " + strategy))
+                .toFile(this.getAll());
+    }
 }

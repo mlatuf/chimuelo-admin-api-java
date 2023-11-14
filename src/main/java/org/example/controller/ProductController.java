@@ -2,24 +2,23 @@ package org.example.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.example.controller.request.CreateUpdateProductRequest;
-import org.example.controller.request.CreateVariantRequest;
-import org.example.controller.request.ListProductRequest;
-import org.example.controller.request.UpdatePriceRequest;
+import org.example.controller.request.*;
 import org.example.controller.response.ListProductResponse;
 import org.example.dto.ProductDto;
 import org.example.mapper.ProductMapper;
 import org.example.model.PageResponse;
 import org.example.model.Product;
 import org.example.service.ProductService;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 
 @RestController
 @RequestMapping("/api/products")
@@ -73,5 +72,14 @@ public class ProductController {
     public ProductDto updateVariants(@RequestBody @Validated UpdatePriceRequest request,
                                      @PathVariable Long productId) {
         return productMapper.toDto(productService.updateProductPrice(productId, request));
+    }
+
+    @PostMapping("/file")
+    @Operation(summary = "Recupera el archivo para importar en otra aplicacion")
+    public @ResponseBody ResponseEntity<InputStreamResource> export(@RequestBody @Validated ExportRequest request) throws IOException {
+        final var export = productService.export(request);
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf(Files.probeContentType(export.toPath())))
+                .body(new InputStreamResource(new FileInputStream(export)));
     }
 }

@@ -46,4 +46,5 @@ public class ProductEntity implements HasId {
     private List<VariantEntity> variants;
     @OneToOne
     private CategoryEntity category;
+    private String idEmpretienda;
 }

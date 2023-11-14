@@ -38,7 +38,6 @@ public class VariantEntity implements HasId {
     )
     private Long id;
     private String sku;
-    private String name;
     private String size;
     private Long stock;
     @Convert(converter = MoneyConverter.class)
@@ -47,4 +46,5 @@ public class VariantEntity implements HasId {
     @Convert(converter = HashMapConverter.class)
     @Column(columnDefinition = "TEXT")
     private Map<String, String> properties;
+    private String idStock;
 }

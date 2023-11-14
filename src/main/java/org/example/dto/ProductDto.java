@@ -18,4 +18,6 @@ public class ProductDto  implements HasId {
     private String name;
     private List<VariantDto> variants;
     private CategoryDto category;
+    //FIXEME no va a ser obligatorio esto, es para importar
+    private String idEmpretienda;
 }
