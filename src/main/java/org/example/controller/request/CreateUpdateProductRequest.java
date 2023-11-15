@@ -9,4 +9,5 @@ public class CreateUpdateProductRequest {
     @NotEmpty
     private String name;
     private Long categoryId;
+    private String idEmpretienda;
 }

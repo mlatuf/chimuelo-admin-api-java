@@ -119,6 +119,7 @@ public class ProductService {
 
     private Product buildProduct(CreateUpdateProductRequest request) {
         Product.ProductBuilder builder = Product.builder()
+                .idEmpretienda(request.getIdEmpretienda())
                 .name(request.getName());
         if (request.getCategoryId() != null) {
             builder.category(categoryService.getCategoryById(request.getCategoryId()));
