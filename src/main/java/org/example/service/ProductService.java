@@ -56,7 +56,6 @@ public class ProductService {
     public Product addVariant(Long productId, CreateVariantRequest request) {
         Variant variant = Variant.builder()
                 .sku(request.getSku())
-                .size(request.getSize())
                 .stock(request.getStock())
                 .price(request.getPrice())
                 .properties(request.getProperties())
@@ -113,6 +112,12 @@ public class ProductService {
         return save(productById);
     }
 
+    public Product deleteProduct(Long productId) {
+        Product productById = this.getProductById(productId);
+        repository.deleteById(productId);
+        return productById;
+    }
+
     private Product save(Product product) {
         return mapper.toModel(repository.save(mapper.toEntity(product)));
     }
@@ -132,7 +137,6 @@ public class ProductService {
     private Variant buildVariant(CreateVariantRequest request) {
         return Variant.builder()
                 .sku(request.getSku() == null ? request.getSku() : null)
-                .size(request.getSize() == null ? request.getSize() : null)
                 .stock(request.getStock() == null ? request.getStock() : null)
                 .price(request.getPrice() == null ? request.getPrice() : null)
                 .properties(request.getProperties() == null ? request.getProperties() : null)

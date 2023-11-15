@@ -16,7 +16,6 @@ import java.util.Map;
 public class VariantDto  implements HasId {
     private Long id;
     private String sku;
-    private String size;
     private Long stock;
     private Money price;
     private Map<String, String> properties;

@@ -31,7 +31,6 @@ public interface VariantMapper {
     default Variant mergeChangesIntoOriginal(Variant original, Variant changes) {
         return Variant.builder()
                 .sku(changes.getSku() == null ? original.getSku() : changes.getSku())
-                .size(changes.getSize() == null ? original.getSize() : changes.getSize())
                 .stock(changes.getStock() == null ? original.getStock() : changes.getStock())
                 .price(changes.getPrice() == null ? original.getPrice() : changes.getPrice())
                 .properties(changes.getProperties() == null ? original.getProperties() : changes.getProperties())

@@ -82,4 +82,10 @@ public class ProductController {
                 .contentType(MediaType.valueOf(Files.probeContentType(export.toPath())))
                 .body(new InputStreamResource(new FileInputStream(export)));
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Borra un producto por id")
+    public void delete(@PathVariable Long productId) {
+        productService.deleteProduct(productId);
+    }
 }

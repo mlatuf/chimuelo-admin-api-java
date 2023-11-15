@@ -16,12 +16,12 @@ public class CreateVariantRequest {
     private String sku;
     @NotEmpty
     private String name;
-    @NotEmpty
-    private String size;
     @NotNull
     private Long stock;
     @Valid
     @NotNull
     private Money price;
     private Map<String, String> properties;
+
+    private String idStock;
 }
