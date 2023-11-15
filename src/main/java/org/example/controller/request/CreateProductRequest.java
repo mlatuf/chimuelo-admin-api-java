@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 
 @Data
-public class CreateUpdateProductRequest {
+public class CreateProductRequest {
     @NotEmpty
     private String name;
     private Long categoryId;

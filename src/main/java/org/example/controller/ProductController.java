@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,7 +28,7 @@ public class ProductController {
 
     @PostMapping
     @Operation(summary = "Crea productos")
-    public ProductDto createProduct(@RequestBody @Validated CreateUpdateProductRequest request) {
+    public ProductDto createProduct(@RequestBody @Validated CreateProductRequest request) {
         return productMapper.toDto(productService.createProduct(request));
     }
 
@@ -49,23 +48,17 @@ public class ProductController {
 
     @Operation(summary = "Actualizar producto")
     @PatchMapping("/{productId}")
-    public ProductDto updateProduct(@PathVariable Long productId, @RequestBody @Validated CreateUpdateProductRequest request) {
+    public ProductDto updateProduct(@PathVariable Long productId, @RequestBody @Validated UpdateProductRequest request) {
         return productMapper.toDto(productService.patchProduct(productId, request));
     }
 
-    @Operation(summary = "Agregar una variante a un producto")
-    @PostMapping("/{productId}/variants")
-    public ProductDto addVariant(@RequestBody @Validated CreateVariantRequest request, @PathVariable Long productId) {
-        return productMapper.toDto(productService.addVariant(productId, request));
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Borra un producto por id")
+    public void delete(@PathVariable Long productId) {
+        productService.deleteProduct(productId);
     }
 
-    @PatchMapping("/{productId}/variants/{variantId}")
-    @Operation(summary = "Actualiza una variante")
-    public ProductDto updateVariant(@RequestBody @Validated CreateVariantRequest request,
-                                    @PathVariable Long productId,
-                                    @PathVariable Long variantId) {
-        return productMapper.toDto(productService.updateVariant(productId, variantId, request));
-    }
 
     @PatchMapping("/{productId}/price")
     @Operation(summary = "Actualiza el precio de todas las variantes del producto")
@@ -83,9 +76,4 @@ public class ProductController {
                 .body(new InputStreamResource(new FileInputStream(export)));
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Borra un producto por id")
-    public void delete(@PathVariable Long productId) {
-        productService.deleteProduct(productId);
-    }
 }

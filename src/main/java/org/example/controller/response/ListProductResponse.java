@@ -7,6 +7,7 @@ import org.example.model.Product;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,12 +18,11 @@ public class ListProductResponse extends PaginatedResponse<ProductDto> {
 
     public ListProductResponse(int pageSize, int pageNumber, long totalElements, int totalPages, List<ProductDto> elements) {
         super(pageSize, pageNumber, totalElements, totalPages, elements);
-
-
         propertiesSummary = elements.stream()
                 .map(ProductDto::getVariants)
                 .flatMap(List::stream)
                 .map(VariantDto::getProperties)
+                .filter(Objects::nonNull)
                 .map(Map::entrySet)
                 .flatMap(Set::stream)
                 .collect(Collectors.groupingBy(entry -> entry.getKey(),

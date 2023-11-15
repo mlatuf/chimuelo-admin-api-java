@@ -1,14 +1,20 @@
 package org.example.mapper;
 
+import org.example.controller.request.CreateProductRequest;
+import org.example.controller.request.UpdateProductRequest;
 import org.example.dto.ProductDto;
 import org.example.entity.ProductEntity;
+import org.example.model.Client;
 import org.example.model.Product;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {CategoryMapper.class, VariantMapper.class}, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+@Mapper(componentModel = "spring", uses = {CategoryMapper.class, VariantMapper.class}, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ProductMapper {
     ProductDto toDto(Product model);
 
@@ -20,13 +26,7 @@ public interface ProductMapper {
 
     List<Product> toModel(List<ProductEntity> entities);
 
-    default Product mergeChangesIntoOriginal(Product original, Product changes) {
-        return Product.builder()
-                .name(changes.getName() == null ? original.getName() : changes.getName())
-                .category(changes.getCategory() == null ? original.getCategory() : changes.getCategory())
-                .id(changes.getId() == null ? original.getId() : changes.getId())
-                .variants(changes.getVariants() == null ? original.getVariants() : changes.getVariants())
-                .idEmpretienda(changes.getIdEmpretienda() == null ? original.getIdEmpretienda() : changes.getIdEmpretienda())
-                .build();
-    }
+    Product merge(@MappingTarget Product target, UpdateProductRequest changes);
+
+    Product fromRequest(CreateProductRequest request);
 }

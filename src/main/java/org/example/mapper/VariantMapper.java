@@ -1,5 +1,8 @@
 package org.example.mapper;
 
+import org.example.controller.request.CreateProductRequest;
+import org.example.controller.request.CreateVariantRequest;
+import org.example.controller.request.UpdateVariantRequest;
 import org.example.dto.ProductDto;
 import org.example.dto.VariantDto;
 import org.example.entity.ProductEntity;
@@ -8,12 +11,15 @@ import org.example.model.Money;
 import org.example.model.Product;
 import org.example.model.Variant;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
 import java.util.Map;
 
-@Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+@Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface VariantMapper {
 
 
@@ -27,14 +33,7 @@ public interface VariantMapper {
 
     List<Variant> toModel(List<VariantEntity> entities);
 
+    Variant merge(@MappingTarget Variant target, UpdateVariantRequest request);
 
-    default Variant mergeChangesIntoOriginal(Variant original, Variant changes) {
-        return Variant.builder()
-                .sku(changes.getSku() == null ? original.getSku() : changes.getSku())
-                .stock(changes.getStock() == null ? original.getStock() : changes.getStock())
-                .price(changes.getPrice() == null ? original.getPrice() : changes.getPrice())
-                .properties(changes.getProperties() == null ? original.getProperties() : changes.getProperties())
-                .idStock(changes.getIdStock() == null ? original.getIdStock() : changes.getIdStock())
-                .build();
-    }
+    Variant fromRequest(CreateVariantRequest request);
 }

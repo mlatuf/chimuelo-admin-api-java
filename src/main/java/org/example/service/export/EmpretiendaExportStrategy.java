@@ -15,6 +15,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.example.model.ExportStrategyName.EMPRETIENDA;
 
@@ -22,6 +25,7 @@ import static org.example.model.ExportStrategyName.EMPRETIENDA;
 @Slf4j
 public class EmpretiendaExportStrategy implements ExportStrategy {
 
+    private static final int EMPRETIENDA_CANTIDAD_ATRIBUTOS = 3;
     private final ObjectMapper objectMapper;
 
     protected EmpretiendaExportStrategy(ObjectMapper objectMapper) {
@@ -42,7 +46,7 @@ public class EmpretiendaExportStrategy implements ExportStrategy {
         addInfoToSpreadsheet(products, sheet);
         File tempFile = null;
         try {
-             tempFile = File.createTempFile(this.getStrategyName().name(), String.valueOf(System.currentTimeMillis()) + ".xlsx");
+            tempFile = File.createTempFile(this.getStrategyName().name(), String.valueOf(System.currentTimeMillis()) + ".xlsx");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -67,13 +71,18 @@ public class EmpretiendaExportStrategy implements ExportStrategy {
                 row.createCell(cellNumber++).setCellValue(variant.getStock()); //stock
                 row.createCell(cellNumber++).setCellValue(variant.getSku()); //sku
                 row.createCell(cellNumber++).setCellValue(variant.getPrice().getAmount().toString()); //precio
-                row.createCell(cellNumber++).setCellValue("N/A"); // precio oferta
-                row.createCell(cellNumber++).setCellValue("N/A"); //nom att 1
-                row.createCell(cellNumber++).setCellValue("N/A"); //val att 1
-                row.createCell(cellNumber++).setCellValue("N/A"); //nom att 2
-                row.createCell(cellNumber++).setCellValue("N/A"); //val att 2
-                row.createCell(cellNumber++).setCellValue("N/A"); //nom att 3
-                row.createCell(cellNumber++).setCellValue("N/A"); //val att 3
+                row.createCell(cellNumber++); // precio oferta
+
+                var entries = variant.getProperties().entrySet().stream().toList();
+                for (int i = 0; i < EMPRETIENDA_CANTIDAD_ATRIBUTOS; i++) {
+                    //TODO improve, this will be asked always
+                    if ((entries.size()) > i) {
+                        row.createCell(cellNumber++).setCellValue(entries.get(i).getKey()); //nom att
+                        row.createCell(cellNumber++).setCellValue(entries.get(i).getValue()); //val att
+                    } else {
+                        cellNumber = cellNumber + 2;
+                    }
+                }
                 row.createCell(cellNumber++).setCellValue(product.getCategory().getFullName()); //categorias
                 row.createCell(cellNumber++).setCellValue("N/A"); // peso
                 row.createCell(cellNumber++).setCellValue("N/A"); // alto

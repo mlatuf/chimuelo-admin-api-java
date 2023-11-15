@@ -1,10 +1,6 @@
 package org.example.service;
 
-import lombok.RequiredArgsConstructor;
-import org.example.controller.request.CreateUpdateProductRequest;
-import org.example.controller.request.CreateVariantRequest;
-import org.example.controller.request.ExportRequest;
-import org.example.controller.request.UpdatePriceRequest;
+import org.example.controller.request.*;
 import org.example.entity.ProductEntity;
 import org.example.exception.ResourceNotFoundException;
 import org.example.mapper.ProductMapper;
@@ -18,10 +14,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -49,17 +43,12 @@ public class ProductService {
         this.exportStrategies = exportStrategies.stream().collect(Collectors.toMap(ExportStrategy::getStrategyName, Function.identity()));
     }
 
-    public Product createProduct(CreateUpdateProductRequest request) {
-        return this.save(buildProduct(request));
+    public Product createProduct(CreateProductRequest request) {
+        return this.save(mapper.fromRequest(request));
     }
 
     public Product addVariant(Long productId, CreateVariantRequest request) {
-        Variant variant = Variant.builder()
-                .sku(request.getSku())
-                .stock(request.getStock())
-                .price(request.getPrice())
-                .properties(request.getProperties())
-                .build();
+        Variant variant = variantMapper.fromRequest(request);
 
         Product product = this
                 .getProductById(productId)
@@ -88,17 +77,16 @@ public class ProductService {
         return page;
     }
 
-    public Product patchProduct(Long productId, CreateUpdateProductRequest request) {
-        return save(mapper.mergeChangesIntoOriginal(this.getProductById(productId), this.buildProduct(request)));
+    public Product patchProduct(Long productId, UpdateProductRequest request) {
+        return save(mapper.merge(this.getProductById(productId), request));
     }
 
-    public Product updateVariant(Long productId, Long variantId, CreateVariantRequest request) {
+    public Product updateVariant(Long productId, Long variantId, UpdateVariantRequest request) {
         Product productById = this.getProductById(productId);
         Variant variant = productById.getVariants().stream()
                 .filter(var -> var.getId().equals(variantId)).findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException(variantId));
-        Variant changes = buildVariant(request);
-        variantMapper.mergeChangesIntoOriginal(variant, changes);
+        variantMapper.merge(variant, request);
         return this.save(productById);
     }
 
@@ -120,27 +108,6 @@ public class ProductService {
 
     private Product save(Product product) {
         return mapper.toModel(repository.save(mapper.toEntity(product)));
-    }
-
-    private Product buildProduct(CreateUpdateProductRequest request) {
-        Product.ProductBuilder builder = Product.builder()
-                .idEmpretienda(request.getIdEmpretienda())
-                .name(request.getName());
-        if (request.getCategoryId() != null) {
-            builder.category(categoryService.getCategoryById(request.getCategoryId()));
-        }
-        return builder.build();
-    }
-
-
-    //TODO move this to mapstruct mapper
-    private Variant buildVariant(CreateVariantRequest request) {
-        return Variant.builder()
-                .sku(request.getSku() == null ? request.getSku() : null)
-                .stock(request.getStock() == null ? request.getStock() : null)
-                .price(request.getPrice() == null ? request.getPrice() : null)
-                .properties(request.getProperties() == null ? request.getProperties() : null)
-                .build();
     }
 
     public List<Product> getAll() {
