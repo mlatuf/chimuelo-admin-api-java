@@ -2,8 +2,8 @@ package org.example.exception;
 
 import lombok.Getter;
 
+@Getter
 public class ResourceNotFoundException extends RuntimeException {
-    @Getter
     private final Long id;
 
     public ResourceNotFoundException(String message, Long id) {

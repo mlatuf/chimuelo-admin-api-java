@@ -32,10 +32,10 @@ public class ProductController {
         return productMapper.toDto(productService.createProduct(request));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{productId}")
     @Operation(summary = "Get product")
-    public ProductDto getProduct(@PathVariable Long id) {
-        return productMapper.toDto(productService.getProductById(id));
+    public ProductDto getProduct(@PathVariable Long productId) {
+        return productMapper.toDto(productService.getProductById(productId));
     }
 
     @GetMapping
@@ -53,7 +53,7 @@ public class ProductController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{productId}")
     @Operation(summary = "Borra un producto por id")
     public void delete(@PathVariable Long productId) {
         productService.deleteProduct(productId);
