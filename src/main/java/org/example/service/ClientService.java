@@ -24,7 +24,7 @@ public class ClientService {
     public Client createClient(CreateClientRequest req) {
         Client build = Client.builder()
                 .name(req.getName())
-                .address(req.getAddress())
+                .address(mapper.toAddressModel(req.getAddress()))
                 .instagram(req.getInstagram())
                 .lastname(req.getLastname())
                 .phone(req.getPhone())

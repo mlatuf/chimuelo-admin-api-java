@@ -10,11 +10,11 @@ import org.example.capabilities.HasId;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClientDto  implements HasId {
+public class ClientDto implements HasId {
     private Long id;
     private String name;
     private String lastname;
-    private String address;
+    private AddressDto address;
     private String phone;
     private String instagram;
     private Integer score;

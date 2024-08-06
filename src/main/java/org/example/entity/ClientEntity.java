@@ -6,12 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.capabilities.HasId;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -19,7 +14,7 @@ import javax.persistence.Table;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClientEntity  implements HasId {
+public class ClientEntity implements HasId {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -33,7 +28,8 @@ public class ClientEntity  implements HasId {
     private Long id;
     private String name;
     private String lastname;
-    private String address;
+    @Embedded
+    private AddressEntity address;
     private String phone;
     private String instagram;
     private Integer score;

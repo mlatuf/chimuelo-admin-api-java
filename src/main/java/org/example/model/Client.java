@@ -14,7 +14,7 @@ public class Client  implements HasId {
     private Long id;
     private String name;
     private String lastname;
-    private String address;
+    private Address address;
     private String phone;
     private String instagram;
     private Integer score;

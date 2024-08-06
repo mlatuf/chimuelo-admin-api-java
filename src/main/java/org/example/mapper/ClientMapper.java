@@ -1,7 +1,9 @@
 package org.example.mapper;
 
+import org.example.dto.AddressDto;
 import org.example.dto.ClientDto;
 import org.example.entity.ClientEntity;
+import org.example.model.Address;
 import org.example.model.Client;
 import org.mapstruct.*;
 
@@ -26,4 +28,5 @@ public interface ClientMapper {
 
     Client merge(@MappingTarget Client target, Client input);
 
+    Address toAddressModel(AddressDto address);
 }
